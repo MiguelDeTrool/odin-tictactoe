@@ -1,17 +1,11 @@
 const displayController = (function() {
     const _gridDisplay = document.querySelectorAll(".space");
-    const _playerDisplay = document.querySelector("player-display");
-
-    _gridDisplay.forEach((element) => {
-        element.addEventListener('click', () => {
-            element.getAttribute("data-attribute");
-        });
-    });
+    const _playerDisplay = document.querySelector(".player-display");
 
     const _updateGrid = (currentGrid) => {
-        for (let i = 0; i < _gridDisplay.length; i++) {
+        for (let i = 0; i < currentGrid.length; i++) {
             _gridDisplay[i].textContent = currentGrid[i];
-        }
+        };
     };
 
     const _updatePlayer = (currentPlayer) => {
@@ -21,7 +15,7 @@ const displayController = (function() {
 
     const updateDisplay = () => {
         _updateGrid(gameBoard.returnGrid());
-        _updatePlayer("????");
+        _updatePlayer(turnHandler.returnCurrentPlayer());
     };
 
     return {
@@ -30,8 +24,8 @@ const displayController = (function() {
 })();
 
 const gameBoard = (function() {
-    const _grid = new Array(9);
-    // const _grid = ["O", "X", "O", "X", "O", "O", "X", "O", "X",];
+    // const _grid = new Array(9);
+    const _grid = ["O", "X", "O", "X", "O", "O", "X", "O", "X",];
 
     const playMove = (player, space) => {
         let currentMark = player.mark;
@@ -44,12 +38,45 @@ const gameBoard = (function() {
 
     return {
         playMove,
-        returnGrid
+        returnGrid,
+    };
+})();
+
+const turnHandler = (function() {
+    const _gridElements = document.querySelectorAll(".space");
+    let _currentPlayer = {};
+    let _nextPlayer = {};
+
+    // Event listener for when a turn is played, update model, then display
+    _gridElements.forEach((element) => {
+        element.addEventListener('click', () => {
+            let playedSpace = element.getAttribute("data-attribute");
+            gameBoard.playMove(_currentPlayer, playedSpace);
+            displayController.updateDisplay()
+
+            // Update current and next players
+            let tempPlayer = _currentPlayer;
+            _currentPlayer = _nextPlayer;
+            _nextPlayer = tempPlayer;
+        });
+    });
+
+    const getPlayers = (player1, player2) => {
+        _currentPlayer = player1;
+        _nextPlayer = player2;
+    }
+
+    const returnCurrentPlayer = () => {
+        return _currentPlayer
+    };
+
+    return {
+        returnCurrentPlayer,
+        getPlayers,
     };
 })();
 
 const Player = function(name, number, mark) {
-
     return {
         name,
         number,
@@ -57,4 +84,10 @@ const Player = function(name, number, mark) {
     };
 };
 
-// displayController.updateDisplay()
+displayController.updateDisplay();
+
+// Test players, will be created by a pre-game modal
+var player1 = Player("Andy", 1, "X");
+let player2 = Player("Bobby", 2, "O");
+
+turnHandler.getPlayers(player1, player2);
