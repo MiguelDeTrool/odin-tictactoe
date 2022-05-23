@@ -135,12 +135,13 @@ table {
 }
 
 :root {
-    background-color: rgb(195, 209, 214);
+    background-color: rgb(95, 99, 100);
+    font-family: Ubuntu, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 
 .gameboard-container {
-    border: thin solid red;
+    border: thin solid white;
     box-sizing: border-box;
     width: 40rem;
     height: 40rem;
@@ -151,9 +152,17 @@ table {
 }
 
 .space {
-    background-color: rgb(195, 209, 214);
-    border: thin solid red;
+    --font-size: 6rem;
+
+    background-color: rgb(95, 99, 100);
+    border: thin solid white;
     box-sizing: border-box;
+
+    font-size: var(--font-size);
+    color: white;
+    text-align: center;
+    padding-top: calc(50% - calc(var(--font-size) / 2) );
+
     &:hover {
         filter: brightness(0.9);
     }
