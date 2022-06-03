@@ -169,4 +169,16 @@ table {
   -webkit-filter: brightness(0.9);
           filter: brightness(0.9);
 }
+
+.player-display-container {
+  margin: 40px 0px;
+  font-size: 2rem;
+  color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
 /*# sourceMappingURL=styles.css.map */

@@ -167,3 +167,11 @@ table {
         filter: brightness(0.9);
     }
 }
+
+.player-display-container {
+    margin: 40px 0px;
+    font-size: 2rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+}

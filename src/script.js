@@ -9,7 +9,7 @@ const displayController = (function() {
     };
 
     const _updatePlayer = (currentPlayer) => {
-        _playerDisplay.textContent = `Player ${currentPlayer.number}'s turn, (${currentPlayer.mark})`
+        _playerDisplay.textContent = `${currentPlayer.name}'s turn (${currentPlayer.mark})`
         //make an element's textContent say "Player 1's turn (X)" or opposite
     };
 
@@ -24,8 +24,8 @@ const displayController = (function() {
 })();
 
 const gameBoard = (function() {
-    // const _grid = new Array(9);
-    const _grid = ["O", "X", "O", "X", "O", "O", "X", "O", "X",];
+    const _grid = new Array(9);
+    // const _grid = ["O", "X", "O", "X", "O", "O", "X", "O", "X",];
 
     const playMove = (player, space) => {
         let currentMark = player.mark;
@@ -36,9 +36,17 @@ const gameBoard = (function() {
         return _grid;
     };
 
+    const checkWin = () => {
+        // Check horizontal win (%1)
+        // Check vertcal win (%3)
+        // Check diagonal win (special cases) 
+
+    }
+
     return {
         playMove,
         returnGrid,
+        checkWin,
     };
 })();
 
@@ -48,18 +56,29 @@ const turnHandler = (function() {
     let _nextPlayer = {};
 
     // Event listener for when a turn is played, update model, then display
-    _gridElements.forEach((element) => {
-        element.addEventListener('click', () => {
-            let playedSpace = element.getAttribute("data-attribute");
-            gameBoard.playMove(_currentPlayer, playedSpace);
-            displayController.updateDisplay()
+    const playTurn = function (event) {
+            let playedSpace = event.target.getAttribute("data-attribute");
 
-            // Update current and next players
-            let tempPlayer = _currentPlayer;
-            _currentPlayer = _nextPlayer;
-            _nextPlayer = tempPlayer;
-        });
-    });
+            //Check space is empty before playing turn
+            if (gameBoard.returnGrid()[playedSpace] === undefined) {
+                gameBoard.playMove(_currentPlayer, playedSpace);
+                // Update current and next players
+                let tempPlayer = _currentPlayer;
+                _currentPlayer = _nextPlayer;
+                _nextPlayer = tempPlayer;
+
+                // Update display
+                displayController.updateDisplay()
+
+            //Then check win
+
+            } else {
+                alert("Space not free");
+            }
+
+    };
+
+    _gridElements.forEach((element) => {element.addEventListener('click', playTurn)});
 
     const getPlayers = (player1, player2) => {
         _currentPlayer = player1;
@@ -84,10 +103,12 @@ const Player = function(name, number, mark) {
     };
 };
 
-displayController.updateDisplay();
 
-// Test players, will be created by a pre-game modal
-var player1 = Player("Andy", 1, "X");
+// Players will be created by a pre-game modal, these are tests
+let player1 = Player("Andy", 1, "X");
 let player2 = Player("Bobby", 2, "O");
 
 turnHandler.getPlayers(player1, player2);
+
+//Initialize screen
+displayController.updateDisplay();
