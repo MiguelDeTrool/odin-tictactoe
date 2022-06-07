@@ -9,7 +9,8 @@ const displayController = (function() {
     };
 
     const _updatePlayer = (currentPlayer) => {
-        _playerDisplay.textContent = `${currentPlayer.name}'s turn (${currentPlayer.mark})`;
+        _playerDisplay.textContent = `${currentPlayer.name}'s turn (${currentPlayer.mark})`
+        //make an element's textContent say "Player 1's turn (X)" or opposite
     };
 
     const updateDisplay = () => {
@@ -23,7 +24,7 @@ const displayController = (function() {
 })();
 
 const gameBoard = (function() {
-    let _grid = new Array(9);
+    const _grid = new Array(9);
     // const _grid = ["O", "X", "O", "X", "O", "O", "X", "O", "X",];
 
     const playMove = (player, space) => {
@@ -31,18 +32,14 @@ const gameBoard = (function() {
         _grid[space] = currentMark;
     };
 
-    const resetGrid = () => {
-        _grid = new Array(9);
-    };
-
     const returnGrid = () => {
         return _grid;
     };
 
+
     return {
         playMove,
         returnGrid,
-        resetGrid,
     };
 })();
 
@@ -74,14 +71,9 @@ const turnHandler = (function() {
             return true;
         }
 
-        if (grid[2] != undefined && grid[2] === grid[4] && grid[2] === grid[6]) {
+        if (grid[2] != undefined && grid[0] === grid[4] && grid[0] === grid[6]) {
             return true;
         }
-    }
-
-    const _handleWin = () => {
-        displayController.updateDisplay();
-        modals.displayPostGameModal(_currentPlayer.name);
     }
 
     // Event listener for when a turn is played, update model, then display
@@ -94,7 +86,9 @@ const turnHandler = (function() {
 
                 // Check win
                 if (_checkWin() === true) {
-                    _handleWin();
+                    displayController.updateDisplay();
+                    alert(`${_currentPlayer.name} has won!`);
+                    // Modal needed to offer to play again
                     return;
                 }
 
@@ -139,48 +133,12 @@ const Player = function(name, number, mark) {
     };
 };
 
-const modals = (function () {
-    let _preGameModal = document.querySelector(".pre-game-modal-container>form");
 
-    let _postGameModal = document.querySelector(".post-game-modal-container");
+// Players will be created by a pre-game modal, these are tests
+let player1 = Player("Andy", 1, "X");
+let player2 = Player("Bobby", 2, "O");
 
-    let _postGameModalTextDisplay = document.querySelector(".post-game-modal-container p")
+turnHandler.getPlayers(player1, player2);
 
-    let _playAgainButton = document.querySelector(".play-again-button");
-
-    _preGameModal.addEventListener("submit", function (e) {
-        e.preventDefault(); // I think this is redundant because the form's action is javascript:void(0)
-        let player1name = _preGameModal.elements["player-1-name"].value;
-        let player2name = _preGameModal.elements["player-2-name"].value;
-        player1name.toString(player1name);
-        player2name.toString(player2name);
-
-        let player1 = Player(player1name, 1, "X");
-        let player2 = Player(player2name, 2, "O");
-
-        turnHandler.getPlayers(player1, player2);
-
-        _preGameModal.parentNode.style.display = "none";
-
-        //Initialize screen
-        displayController.updateDisplay();
-    });
-
-    _playAgainButton.addEventListener("click", function (e) {
-        gameBoard.resetGrid();
-
-        displayController.updateDisplay();
-
-        _postGameModal.style.display = "none";
-        _preGameModal.parentNode.style.display = "flex";
-    });
-
-    const displayPostGameModal = (winningPlayerName) => {
-        _postGameModalTextDisplay.textContent = `${winningPlayerName} has won!`; // Don't have to use two .firstChild method's to go down two levels, empty div doesn't seem to count
-        _postGameModal.style.display = "flex";
-    }
-
-    return {
-        displayPostGameModal,
-    }
-})();
+//Initialize screen
+displayController.updateDisplay();
