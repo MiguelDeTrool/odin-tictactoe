@@ -52,6 +52,21 @@ const turnHandler = (function() {
     let _currentPlayer = {};
     let _nextPlayer = {};
 
+    const _checkDraw = () => {
+        let grid = gameBoard.returnGrid();
+
+        // Check if each space is undefined, if all aren't, return false. If all are, get through the loop and return true.
+        for (let i = 0; i < 9; i++) {
+            if (grid[i] !== undefined) {
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    };
+
     const _checkWin = () => {
         let grid = gameBoard.returnGrid();
 
@@ -79,11 +94,6 @@ const turnHandler = (function() {
         }
     }
 
-    const _handleWin = () => {
-        displayController.updateDisplay();
-        modals.displayPostGameModal(_currentPlayer.name);
-    }
-
     // Event listener for when a turn is played, update model, then display
     const playTurn = function (event) {
             let playedSpace = event.target.getAttribute("data-attribute");
@@ -94,7 +104,8 @@ const turnHandler = (function() {
 
                 // Check win
                 if (_checkWin() === true) {
-                    _handleWin();
+                    displayController.updateDisplay();
+                    modals.displayPostGameModal(`${_currentPlayer.name} has won!`);
                     return;
                 }
 
@@ -106,7 +117,12 @@ const turnHandler = (function() {
                 // Update display
                 displayController.updateDisplay();
 
-                //Then check if any more spaces to determine draw
+                // Then check if there's a draw
+                if (_checkDraw() === true) {
+                    displayController.updateDisplay();
+                    modals.displayPostGameModal(`It's a draw!`);
+                    return;
+                }
 
             } else {
                 alert("Space not free");
@@ -175,8 +191,8 @@ const modals = (function () {
         _preGameModal.parentNode.style.display = "flex";
     });
 
-    const displayPostGameModal = (winningPlayerName) => {
-        _postGameModalTextDisplay.textContent = `${winningPlayerName} has won!`; // Don't have to use two .firstChild method's to go down two levels, empty div doesn't seem to count
+    const displayPostGameModal = (textToDisplay) => {
+        _postGameModalTextDisplay.textContent = textToDisplay; // Don't have to use two .firstChild method's to go down two levels, empty div doesn't seem to count
         _postGameModal.style.display = "flex";
     }
 
