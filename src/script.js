@@ -1,9 +1,3 @@
-// TO DO
-// Add pre-game player setup modal
-// Add restart button
-// Add after game play again modal
-
-
 const displayController = (function() {
     const _gridDisplay = document.querySelectorAll(".space");
     const _playerDisplay = document.querySelector(".player-display");
